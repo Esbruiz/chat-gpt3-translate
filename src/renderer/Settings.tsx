@@ -17,7 +17,7 @@ export default function Settings({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   const [top_p, setTop_p] = useState(0);
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  const [best_of, setBest_of] = useState(0);
+  const [temperature, setTemperature] = useState(0);
   // eslint-disable-next-line @typescript-eslint/naming-convention
   const [max_tokens, setMax_tokens] = useState(0);
 
@@ -26,12 +26,13 @@ export default function Settings({
       window.localStorage.setItem('apiKey', apiKey);
       setOuterApiKey(apiKey);
     }
+    delete settings.best_of;
     setSettings({
       ...settings,
       model: model || settings.model,
       max_tokens: max_tokens || settings.max_tokens,
       top_p: top_p || settings.top_p,
-      best_of: best_of || settings.best_of,
+      temperature: temperature || settings.temperature,
     });
     setOpen(false);
   };
@@ -75,6 +76,7 @@ export default function Settings({
                     <div className="relative mt-6 flex-1 px-4 sm:px-6">
                       <div className="absolute inset-0 px-4 sm:px-6 space-y-6">
                         <div>
+                          {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                           <label
                             htmlFor="apiKey"
                             className="block text-sm font-medium text-gray-700"
@@ -102,8 +104,9 @@ export default function Settings({
                         </div>
 
                         <div>
+                          {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                           <label
-                            htmlFor="email"
+                            htmlFor="model"
                             className="block text-sm font-medium text-gray-700"
                           >
                             Model
@@ -116,7 +119,7 @@ export default function Settings({
                               id="model"
                               defaultValue={settings.model}
                               className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                              placeholder="EX: text-davinci-003"
+                              placeholder="EX: gpt-3.5-turbo"
                             />
                           </div>
                           <p
@@ -126,7 +129,7 @@ export default function Settings({
                             Sets to model against which the request is
                             made.&nbsp;
                             <a
-                              href="https://beta.openai.com/docs/models/gpt-3"
+                              href="https://platform.openai.com/docs/models/gpt-3-5"
                               className="text-indigo-600 hover:text-indigo-500"
                             >
                               More information
@@ -135,6 +138,7 @@ export default function Settings({
                         </div>
 
                         <div>
+                          {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                           <label
                             htmlFor="top_p"
                             className="block text-sm font-medium text-gray-700"
@@ -166,21 +170,22 @@ export default function Settings({
                         </div>
 
                         <div>
+                          {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                           <label
-                            htmlFor="best_of"
+                            htmlFor="temperature"
                             className="block text-sm font-medium text-gray-700"
                           >
-                            Best Of
+                            Temperature
                           </label>
                           <div className="mt-1">
                             <input
                               onChange={(e) =>
-                                setBest_of(parseInt(e.target.value, 10))
+                                setTemperature(parseFloat(e.target.value))
                               }
                               type="text"
-                              defaultValue={settings.best_of}
-                              name="best_of"
-                              id="best_of"
+                              defaultValue={settings.temperature}
+                              name="temperature"
+                              id="temperature"
                               className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                               placeholder="2"
                             />
@@ -189,12 +194,15 @@ export default function Settings({
                             className="mt-2 text-sm text-gray-500"
                             id="best_of-description"
                           >
-                            Makes multiple requests in order to choose the best
-                            algorithmic result.
+                            What sampling temperature to use, between 0 and 2.
+                            Higher values like 0.8 will make the output more
+                            random, while lower values like 0.2 will make it
+                            more focused and deterministic.
                           </p>
                         </div>
 
                         <div>
+                          {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                           <label
                             htmlFor="max_tokens"
                             className="block text-sm font-medium text-gray-700"

@@ -16,12 +16,12 @@ const Hello = () => {
   const [text, setText] = useState('');
   const [openSettings, setOpenSettings] = useState(false);
   const [settings, setSettings] = useState({
-    model: 'text-davinci-003',
+    model: 'gpt-3.5-turbo',
     max_tokens: 100,
     top_p: 0.8,
     n: 1,
     stream: false,
-    best_of: 2,
+    temperature: 0,
   });
 
   const configuration = new Configuration({});
@@ -40,10 +40,19 @@ const Hello = () => {
   ) => {
     try {
       openai
-        .createCompletion(
+        .createChatCompletion(
           {
             ...innerSettings,
-            prompt: `Translate this into 1. English:\n\n${innerText}\n\n1.`,
+            messages: [
+              {
+                role: 'system',
+                content: 'You are a machine translation system.',
+              },
+              {
+                role: 'user',
+                content: `Translate the following Japanese text to English: ${innerText}`,
+              },
+            ],
           },
           {
             headers: {
@@ -52,7 +61,9 @@ const Hello = () => {
           }
         )
         .then((response) => {
-          setText(response.data.choices[0].text as string);
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          setText(response.data.choices[0].message.content as string);
           return true;
         })
         .catch((error) => setText(error));
